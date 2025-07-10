@@ -180,14 +180,9 @@
         }
         class StatusScene
         {
-            public int atkBonus = 0;
-            public int defBonus = 0;
-
-            // 장착 아이템 목록
-            List<Item> equippeditems = (from item in ItemDB.items
-                                        where item.isEquipped == true
-                                        select item).ToList();
-
+            public int atkBonus;
+            public int defBonus;
+                        
             public void Run()
             {
                 StatusUpdate();
@@ -237,6 +232,14 @@
 
             void StatusUpdate()
             {
+                atkBonus = 0;
+                defBonus = 0;
+
+                // 장착 아이템 목록
+                List<Item> equippeditems = (from item in ItemDB.items
+                                            where item.isEquipped == true
+                                            select item).ToList();
+
                 foreach (Item item in equippeditems)
                 {
                     string selectedStat = item.stat;
