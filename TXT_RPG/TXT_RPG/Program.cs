@@ -74,11 +74,13 @@
             public int gold = 1500;
         }
         class Shop
-        {            
+        {
             List<Item> shopItems = new List<Item>();
 
             public void Run()
             {
+                Console.Clear();
+                
                 Console.WriteLine("상점");
                 Console.WriteLine("필요한 아이템을 얻을 수 있는 상점입니다.");
                 Console.WriteLine();
@@ -106,9 +108,9 @@
             {
                 // 상품 정렬           
                 shopItems.AddRange((from item in ItemDB.items      // 아이템 데이터 배이스에서
-                                   where item.stat == "방어력"     // 방어구 상품부터
-                                   orderby item.statValue          // 스텟 순으로
-                                   select item).ToList());
+                                    where item.stat == "방어력"     // 방어구 상품부터
+                                    orderby item.statValue          // 스텟 순으로
+                                    select item).ToList());
                 shopItems.AddRange((from item in ItemDB.items
                                     where item.stat == "공격력"
                                     orderby item.statValue
@@ -123,7 +125,7 @@
                     i++;
                     price = item.isHave ? "구매완료" : $"{item.gold} G";
                     Console.WriteLine($"- {i} {item.name}\t| {item.stat} +{item.statValue}  | {item.description}\t | {price}");
-                }                             
+                }
 
             }
 
@@ -147,7 +149,7 @@
                         {
                             Console.WriteLine("이미 구매한 아이템입니다.");
                             Console.ReadLine(); // 확인 대기
-                            Buy();  // 화면 재구성
+                            Run();  // 화면 재구성
                             return;
                         }
                         else
@@ -157,17 +159,17 @@
                                 Console.WriteLine("구매를 완료했습니다.");
                                 Player.Instance.gold -= selectedItem.gold;  // 재화 감소
                                 selectedItem.isHave = true; // 안밴토리에 아이템 추가
-                                Buy();  // 화면 재구성
+                                Run();  // 화면 재구성
                                 return;
                             }
                             else
                             {
                                 Console.WriteLine("Gold가 부족합니다.");
                                 Console.ReadLine(); // 확인 대기
-                                Buy();  // 화면 재구성
+                                Run();  // 화면 재구성
                                 return;
                             }
-                               
+
                         }
                     }
                     else
@@ -182,7 +184,7 @@
         {
             public int atkBonus;
             public int defBonus;
-                        
+
             public void Run()
             {
                 StatusUpdate();
@@ -263,12 +265,16 @@
         }
         class InventoryScene
         {
-            // 아이템 DB 아이템 중 가진 아이템만 불러오기
-            List<Item> items = (from item in ItemDB.items
-                                where item.isHave == true
-                                select item).ToList();
+            List<Item> items;
+
             public void Run()
             {
+                // 아이템 DB 아이템 중 가진 아이템만 불러오기
+                items = (from item in ItemDB.items
+                         where item.isHave == true
+                         select item).ToList();
+
+
                 Console.Clear();
 
                 Console.WriteLine("인벤토리");
@@ -313,6 +319,7 @@
 
             void WriteCurrentInventory()
             {
+                
                 // 보유 중인 아이템 목록 작성
                 foreach (Item item in items)
                 {
@@ -323,6 +330,11 @@
 
             void RunEquipmentManage()
             {
+                // 아이템 DB 아이템 중 가진 아이템만 불러오기
+                items = (from item in ItemDB.items
+                         where item.isHave == true
+                         select item).ToList();
+
                 Console.Clear();
 
                 Console.WriteLine("인벤토리 - 장착 관리");
