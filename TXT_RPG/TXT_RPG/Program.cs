@@ -100,8 +100,8 @@
                     switch (num)
                     {
                         case 0:
-                            StartScene startScene = new StartScene();
-                            startScene.Run();
+                            VillageMenu villageMenu = new VillageMenu();
+                            villageMenu.Run();
                             return;
                         default:
                             Console.WriteLine("잘못된 입력입니다.");
@@ -174,8 +174,8 @@
                             RunManageEquipment();
                             return;
                         case 0:
-                            StartScene startScene = new StartScene();
-                            startScene.Run();
+                            VillageMenu villageMenu = new VillageMenu();
+                            villageMenu.Run();
                             return;
                         default:
                             Console.WriteLine("잘못된 입력입니다.");
@@ -245,7 +245,7 @@
                 }
             }
         }
-        class StartScene
+        class VillageMenu
         {
 
             public void Run()
@@ -299,8 +299,8 @@
 
         static void Main(string[] args)
         {
-            StartScene startScene = new StartScene();
-            startScene.Run();
+            VillageMenu villageMenu = new VillageMenu();
+            villageMenu.Run();
         }
 
     }
