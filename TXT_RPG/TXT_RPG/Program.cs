@@ -28,6 +28,33 @@
             public bool isHave;
         }
 
+        class Player
+        {
+
+            // 싱글톤의 개념과 작성에 아직 익숙하지 않아서 chatGPT의 도움을 받았습니다.
+            // 처음에는 Main에서 처음 실행되는 VillageMenu에서 new Player를 만들어서 유지하는 방식을 사용하려고 했지만,
+            // 오히려 저 방식이 더 구현할 때 구조가 복잡해 질 것 같아,
+            // 이 부분은 chatGPT의 조언을 따라 싱글톤 패턴으로 변경하기로 했습니다.
+            private static Player instance;
+            public static Player Instance
+            {
+                get
+                {
+                    if (instance == null)
+                        instance = new Player();
+                    return instance;
+                }
+            }
+
+            public int level = 1;
+            public string name = "James";
+            public string job = "전사";
+            public int atk = 10;
+            public int def = 5;
+            public int hp = 100;
+            public int gold = 1500;
+        }
+
         static class ItemDB
         {
             public static List<Item> items = new List<Item>()
@@ -40,21 +67,24 @@
 
         class Shop
         {
+            StatusScene status = new StatusScene();
+            //int userGold = status.gold;
             public void Run()
             {
+                Console.WriteLine("상점");
+                Console.WriteLine("필요한 아이템을 얻을 수 있는 상점입니다.");
+                Console.WriteLine();
+                
+            }
+
+            void ShowUserGold()
+            {
+                Console.WriteLine("[보유 골드]");
 
             }
         }
-        class Status
+        class StatusScene
         {
-            public int level = 1;
-            public string name = "James";
-            public string job = "전사";
-            public int atk = 10;
-            public int def = 5;
-            public int hp = 100;
-            public int gold = 1500;
-
             public int atkBonus = 0;
             public int defBonus = 0;
 
@@ -78,12 +108,12 @@
                 Console.WriteLine("상태 보기");
                 Console.WriteLine("캐릭터의 정보가 표시됩니다.");
                 Console.WriteLine();
-                Console.WriteLine($"Lv. 0{level}");
-                Console.WriteLine($"{name}({job})");
-                Console.WriteLine($"공격력: {atk + atkBonus} (+{atkBonus})");
-                Console.WriteLine($"방어력: {def + defBonus} (+{defBonus})");
-                Console.WriteLine($"체 력 : {hp}");
-                Console.WriteLine($"Gold: {gold} G");
+                Console.WriteLine($"Lv. 0{Player.Instance.level}");
+                Console.WriteLine($"{Player.Instance.name}({Player.Instance.job})");
+                Console.WriteLine($"공격력: {Player.Instance.atk + atkBonus} (+{atkBonus})");
+                Console.WriteLine($"방어력: {Player.Instance.def + defBonus} (+{defBonus})");
+                Console.WriteLine($"체 력 : {Player.Instance.hp}");
+                Console.WriteLine($"Gold: {Player.Instance.gold} G");
                 Console.WriteLine();
                 Console.WriteLine("0.나가기");
                 Console.WriteLine();
@@ -126,14 +156,14 @@
                         default:
                             Console.WriteLine("장비에 오류가 발생했습니다.");
                             Console.WriteLine("인벤토리 화면으로 이동합니다.");
-                            Inventory inventory = new Inventory();
+                            InventoryScene inventory = new InventoryScene();
                             inventory.Run();
                             return;
                     }
                 }
             }
         }
-        class Inventory
+        class InventoryScene
         {
             // 아이템 DB 아이템 중 가진 아이템만 불러오기
             List<Item> items = (from item in ItemDB.items
@@ -160,7 +190,6 @@
 
                 ChangeScene();
             }
-
 
             void ChangeScene()
             {
@@ -277,11 +306,11 @@
                     switch (num)
                     {
                         case 1:
-                            Status status = new Status();
+                            StatusScene status = new StatusScene();
                             status.Run();
                             return;
                         case 2:
-                            Inventory inventory = new Inventory();
+                            InventoryScene inventory = new InventoryScene();
                             inventory.Run();
                             return;
                         case 3:
