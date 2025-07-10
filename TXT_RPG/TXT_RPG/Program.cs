@@ -2,7 +2,7 @@
 {
     internal class Program
     {
-        static int GetIntInput()
+        static int GetIntInput() 
         {
             while (true)
             {
@@ -45,10 +45,67 @@
 
             }
         }
+        class Status
+        {
+            public int level = 1;
+            public string name = "Chad";
+            public string job = "전사";
+            public int atk = 10;
+            public int def = 5;
+            public int hp = 100;
+            public int gold = 1500;
 
+            public void Run()
+            {
+                Console.Clear();
+
+                WriteStatus();
+                ChangeScene();
+            }
+
+            void WriteStatus()
+            {
+                Console.WriteLine("상태 보기");
+                Console.WriteLine("캐릭터의 정보가 표시됩니다.");
+                Console.WriteLine();
+                Console.WriteLine("Lv. 0{0}", level);
+                Console.WriteLine("{0}({1})", name, job);
+                Console.WriteLine("공격력: {0}", atk);
+                Console.WriteLine("방어력: {0}", def);
+                Console.WriteLine("체 력 : {0}", hp);
+                Console.WriteLine("Gold: {0} G", gold);
+                Console.WriteLine();
+                Console.WriteLine("0.나가기");
+                Console.WriteLine();
+                Console.WriteLine("원하시는 행동을 입력해주세요.");
+                Console.Write(">>");
+            }
+
+            void ChangeScene()
+            {
+                while (true)
+                {
+                    int num = GetIntInput();
+
+                    switch (num)
+                    {
+                        case 0:
+                            StartScene startScene = new StartScene();
+                            startScene.Run();
+                            return;
+                        default:
+                            Console.WriteLine("잘못된 입력입니다.");
+                            break;
+                    }
+                }
+            }
+        }
         class Inventory
         {
-            
+            // 아이템 DB 아이템 중 가진 아이템만 불러오기
+            List<Item> items = (from item in ItemDB.items
+                                where item.isHave == true
+                                select item).ToList();
             public void Run()
             {
                 Console.Clear();
@@ -61,31 +118,18 @@
 
                 WriteCurrentInventory();
 
+                Console.WriteLine();
                 Console.WriteLine("1.장착 관리");
                 Console.WriteLine("0.나가기");
                 Console.WriteLine();
                 Console.WriteLine("원하시는 행동을 입력해주세요.");
                 Console.Write(">>");
 
-                ChageScene();
+                ChangeScene();
             }
 
-            void WriteCurrentInventory()
-            {
-                // 아이템 DB 아이템 중 가진 아이템만 불러오기
-                List<Item> items = (from item in ItemDB.items
-                                   where item.isHave == true
-                                   select item).ToList();
 
-                // 보유 중인 아이템 목록 작성
-                foreach (Item item in items)
-                {
-                    string equipMark = item.isEquipped ? "[E]" : "";
-                    Console.WriteLine($"- {equipMark}{item.name}\t| {item.stat} +{item.statValue} | {item.description}");
-                }
-            }
-
-            void ChageScene()
+            void ChangeScene()
             {
                 while (true)
                 {
@@ -94,9 +138,9 @@
                     switch (num)
                     {
                         case 1:
-                            ManageEquipment();
+                            RunManageEquipment();
                             return;
-                        case 2:
+                        case 0:
                             StartScene startScene = new StartScene();
                             startScene.Run();
                             return;
@@ -105,126 +149,129 @@
                             break;
                     }
                 }
-
-                void ManageEquipment()
-                {
-
-                }
             }
 
-            class Status
+            void WriteCurrentInventory()
             {
-                public int level = 1;
-                public string name = "Chad";
-                public string job = "전사";
-                public int atk = 10;
-                public int def = 5;
-                public int hp = 100;
-                public int gold = 1500;
-
-                public void Run()
+                // 보유 중인 아이템 목록 작성
+                foreach (Item item in items)
                 {
-                    Console.Clear();
+                    string equipMark = item.isEquipped ? "[E]" : "";
+                    Console.WriteLine($"- {equipMark}{item.name}\t| {item.stat} +{item.statValue} | {item.description}");
+                }
+            }
+            void RunManageEquipment()
+            {
+                Console.Clear();
 
-                    WriteStatus();
-                    ChangeScene();
+                Console.WriteLine("인벤토리 - 장착 관리");
+                Console.WriteLine("보유 중인 아이템을 관리할 수 있습니다.");
+                Console.WriteLine();
+                Console.WriteLine("[아이템 목록]");
+
+                int i = 0;
+                foreach (Item item in items)
+                {
+                    i++;
+                    string equipMark = item.isEquipped ? "[E]" : "";
+                    Console.WriteLine($"- {i} {equipMark}{item.name}\t| {item.stat} +{item.statValue} | {item.description}");
                 }
 
-                void WriteStatus()
-                {
-                    Console.WriteLine("상태 보기");
-                    Console.WriteLine("캐릭터의 정보가 표시됩니다.");
-                    Console.WriteLine();
-                    Console.WriteLine("Lv. 0{0}", level);
-                    Console.WriteLine("{0}({1})", name, job);
-                    Console.WriteLine("공격력: {0}", atk);
-                    Console.WriteLine("방어력: {0}", def);
-                    Console.WriteLine("체 력 : {0}", hp);
-                    Console.WriteLine("Gold: {0} G", gold);
-                    Console.WriteLine();
-                    Console.WriteLine("0.나가기");
-                    Console.WriteLine();
-                    Console.WriteLine("원하시는 행동을 입력해주세요.");
-                    Console.Write(">>");
-                }
+                Console.WriteLine();
+                Console.WriteLine("0. 나가기");
+                Console.WriteLine();
+                Console.WriteLine("원하시는 행동을 입력해주세요.");
+                Console.Write(">>");
 
-                void ChangeScene()
+                ManageEquipment();
+            }
+
+            void ManageEquipment()
+            {
+                while (true)
                 {
-                    while (true)
+                    int num = GetIntInput();
+
+                    if (num == 0)
                     {
-                        int num = GetIntInput();
-
-                        switch (num)
-                        {
-                            case 0:
-                                StartScene startScene = new StartScene();
-                                startScene.Run();
-                                return;
-                            default:
-                                Console.WriteLine("잘못된 입력입니다.");
-                                break;
-                        }
+                        Run();
+                        return;
+                    }
+                    else if (num >= 1 && num <= items.Count())
+                    {
+                        Item selectedItem = items[num - 1];
+                        selectedItem.isEquipped = !selectedItem.isEquipped;
+                        RunManageEquipment();
+                        return;
+                    }
+                    else
+                    {
+                        Console.WriteLine("잘못된 입력입니다.");
+                        break;
                     }
                 }
-            }
-
-            class StartScene
-            {
-
-                public void Run()
-                {
-                    Console.Clear();
-
-                    WriteStartScene();
-                    ChangeScene();
-                }
-                void WriteStartScene()
-                {
-                    Console.WriteLine("스파르타 마을에 오신 여러분 환영합니다.");
-                    Console.WriteLine("이곳에서 던전으로 들어가기전 활동을 할 수 있습니다.");
-                    Console.WriteLine();
-                    Console.WriteLine("1.상태 보기");
-                    Console.WriteLine("2.인벤토리");
-                    Console.WriteLine("3.상점");
-                    Console.WriteLine();
-                    Console.WriteLine("원하시는 행동을 입력해주세요.");
-                    Console.Write(">>");
-                }
-
-                void ChangeScene()
-                {
-                    while (true)
-                    {
-                        int num = GetIntInput();
-
-                        switch (num)
-                        {
-                            case 1:
-                                Status status = new Status();
-                                status.Run();
-                                return;
-                            case 2:
-                                Inventory inventory = new Inventory();
-                                inventory.Run();
-                                return;
-                            case 3:
-                                Shop shop = new Shop();
-                                shop.Run();
-                                return;
-                            default:
-                                Console.WriteLine("잘못된 입력입니다.");
-                                break;
-                        }
-                    }
-                }
-
-            }
-
-            static void Main(string[] args)
-            {
-                StartScene startScene = new StartScene();
-                startScene.Run();
             }
         }
+        class StartScene
+        {
+
+            public void Run()
+            {
+                Console.Clear();
+
+                WriteStartScene();
+                ChangeScene();
+            }
+            void WriteStartScene()
+            {
+                Console.WriteLine("스파르타 마을에 오신 여러분 환영합니다.");
+                Console.WriteLine("이곳에서 던전으로 들어가기전 활동을 할 수 있습니다.");
+                Console.WriteLine();
+                Console.WriteLine("1.상태 보기");
+                Console.WriteLine("2.인벤토리");
+                Console.WriteLine("3.상점");
+                Console.WriteLine();
+                Console.WriteLine("원하시는 행동을 입력해주세요.");
+                Console.Write(">>");
+            }
+
+            void ChangeScene()
+            {
+                while (true)
+                {
+                    int num = GetIntInput();
+
+                    switch (num)
+                    {
+                        case 1:
+                            Status status = new Status();
+                            status.Run();
+                            return;
+                        case 2:
+                            Inventory inventory = new Inventory();
+                            inventory.Run();
+                            return;
+                        case 3:
+                            Shop shop = new Shop();
+                            shop.Run();
+                            return;
+                        default:
+                            Console.WriteLine("잘못된 입력입니다.");
+                            break;
+                    }
+                }
+            }
+
+        }
+
+        static void Main(string[] args)
+        {
+            StartScene startScene = new StartScene();
+            startScene.Run();
+        }
+
     }
+
 }
+
+
