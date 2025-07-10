@@ -48,15 +48,25 @@
         class Status
         {
             public int level = 1;
-            public string name = "Chad";
+            public string name = "James";
             public string job = "전사";
             public int atk = 10;
             public int def = 5;
             public int hp = 100;
             public int gold = 1500;
 
+            public int atkBonus = 0;
+            public int defBonus = 0;
+
+            // 장착 아이템 목록
+            List<Item> equippeditems = (from item in ItemDB.items
+                                        where item.isEquipped == true
+                                        select item).ToList();
+
             public void Run()
             {
+                StatusUpdate();
+
                 Console.Clear();
 
                 WriteStatus();
@@ -68,12 +78,12 @@
                 Console.WriteLine("상태 보기");
                 Console.WriteLine("캐릭터의 정보가 표시됩니다.");
                 Console.WriteLine();
-                Console.WriteLine("Lv. 0{0}", level);
-                Console.WriteLine("{0}({1})", name, job);
-                Console.WriteLine("공격력: {0}", atk);
-                Console.WriteLine("방어력: {0}", def);
-                Console.WriteLine("체 력 : {0}", hp);
-                Console.WriteLine("Gold: {0} G", gold);
+                Console.WriteLine($"Lv. 0{level}");
+                Console.WriteLine($"{name}({job})");
+                Console.WriteLine($"공격력: {atk + atkBonus} (+{atkBonus})");
+                Console.WriteLine($"방어력: {def + defBonus} (+{defBonus})");
+                Console.WriteLine($"체 력 : {hp}");
+                Console.WriteLine($"Gold: {gold} G");
                 Console.WriteLine();
                 Console.WriteLine("0.나가기");
                 Console.WriteLine();
@@ -96,6 +106,29 @@
                         default:
                             Console.WriteLine("잘못된 입력입니다.");
                             break;
+                    }
+                }
+            }
+
+            void StatusUpdate()
+            {
+                foreach (Item item in equippeditems)
+                {
+                    string selectedStat = item.stat;
+                    switch (selectedStat)
+                    {
+                        case "공격력":
+                            atkBonus += item.statValue;
+                            break;
+                        case "방어력":
+                            defBonus += item.statValue;
+                            break;
+                        default:
+                            Console.WriteLine("장비에 오류가 발생했습니다.");
+                            Console.WriteLine("인벤토리 화면으로 이동합니다.");
+                            Inventory inventory = new Inventory();
+                            inventory.Run();
+                            return;
                     }
                 }
             }
