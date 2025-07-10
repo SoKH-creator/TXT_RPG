@@ -2,7 +2,7 @@
 {
     internal class Program
     {
-        static int GetIntInput() 
+        static int GetIntInput()
         {
             while (true)
             {
@@ -26,8 +26,27 @@
             public string description;
             public bool isEquipped;
             public bool isHave;
+            public int gold;
         }
 
+        static class ItemDB
+        {
+            public static List<Item> items = new List<Item>()
+            {
+                new Item() { name = "무쇠갑옷", stat = "방어력", statValue = 9, description = "무쇠로 만들어져 튼튼한 갑옷입니다.",
+                    isEquipped = false, isHave = true, gold = 1800 },
+                new Item() { name = "스파르타의 창", stat = "공격력", statValue = 7, description = "스파르타의 전사들이 사용했다는 전설의 창입니다.",
+                    isEquipped = false, isHave = true, gold = 2100 },
+                new Item() { name = "낡은 검", stat = "공격력", statValue = 2, description = "쉽게 볼 수 있는 낡은 검 입니다.",
+                    isEquipped = false, isHave = true, gold = 600 },
+                new Item() { name = "수련자 갑옷", stat = "방어력", statValue = 5, description = "수련에 도움을 주는 갑옷입니다.",
+                    isEquipped = false, isHave = false, gold = 1000 },
+                new Item() { name = "청동 도끼", stat = "공격력", statValue = 5, description = "어디선가 사용됐던거 같은 도끼입니다.",
+                    isEquipped = false, isHave = false, gold = 1500 },
+                new Item() { name = "스파르타의 갑옷", stat = "방어력", statValue = 15, description = "스파르타의 전사들이 사용했다는 전설의 갑옷입니다.",
+                    isEquipped = false, isHave = false, gold = 3500 }
+            };
+        }
         class Player
         {
 
@@ -54,33 +73,109 @@
             public int hp = 100;
             public int gold = 1500;
         }
-
-        static class ItemDB
-        {
-            public static List<Item> items = new List<Item>()
-            {
-                new Item() { name = "무쇠갑옷", stat = "방어력", statValue = 5, description = "무쇠로 만들어져 튼튼한 갑옷입니다.", isEquipped = true, isHave = true },
-                new Item() { name = "스파르타의 창", stat = "공격력", statValue = 7, description = "스파르타의 전사들이 사용했다는 전설의 창입니다.", isEquipped = true, isHave = true },
-                new Item() { name = "낡은 검", stat = "공격력", statValue = 2, description = "쉽게 볼 수 있는 낡은 검 입니다.", isEquipped = false, isHave = true }
-            };
-        }
-
         class Shop
-        {
-            StatusScene status = new StatusScene();
-            //int userGold = status.gold;
+        {            
+            List<Item> shopItems = new List<Item>();
+
             public void Run()
             {
                 Console.WriteLine("상점");
                 Console.WriteLine("필요한 아이템을 얻을 수 있는 상점입니다.");
                 Console.WriteLine();
-                
+
+                ShowUserGold();
+                ShowItemList();
+
+                Console.WriteLine();
+                Console.Write("0. 나가기");
+                Console.WriteLine();
+                Console.WriteLine("원하시는 행동을 입력해주세요.");
+                Console.Write(">>");
+
+                Buy();
             }
 
             void ShowUserGold()
             {
                 Console.WriteLine("[보유 골드]");
+                Console.WriteLine($"{Player.Instance.gold} G");
+                Console.WriteLine();
+            }
 
+            void ShowItemList()
+            {
+                // 상품 정렬           
+                shopItems.AddRange((from item in ItemDB.items      // 아이템 데이터 배이스에서
+                                   where item.stat == "방어력"     // 방어구 상품부터
+                                   orderby item.statValue          // 스텟 순으로
+                                   select item).ToList());
+                shopItems.AddRange((from item in ItemDB.items
+                                    where item.stat == "공격력"
+                                    orderby item.statValue
+                                    select item).ToList());
+
+                Console.WriteLine("[아이템 목록]");
+                // 상품 진열
+                int i = 0;
+                string price;
+                foreach (Item item in shopItems)
+                {
+                    i++;
+                    price = item.isHave ? "구매완료" : $"{item.gold} G";
+                    Console.WriteLine($"- {i} {item.name}\t| {item.stat} +{item.statValue}  | {item.description}\t | {price}");
+                }                             
+
+            }
+
+            void Buy()
+            {
+                while (true)
+                {
+                    int num = GetIntInput();
+
+                    if (num == 0)
+                    {
+                        VillageMenu villageMenu = new VillageMenu();
+                        villageMenu.Run();
+                        return;
+                    }
+                    else if (num >= 1 && num <= shopItems.Count())
+                    {
+                        Item selectedItem = shopItems[num - 1];
+
+                        if (selectedItem.isHave == true)
+                        {
+                            Console.WriteLine("이미 구매한 아이템입니다.");
+                            Console.ReadLine(); // 확인 대기
+                            Buy();  // 화면 재구성
+                            return;
+                        }
+                        else
+                        {
+                            if (Player.Instance.gold >= selectedItem.gold)
+                            {
+                                Console.WriteLine("구매를 완료했습니다.");
+                                Player.Instance.gold -= selectedItem.gold;  // 재화 감소
+                                selectedItem.isHave = true; // 안밴토리에 아이템 추가
+                                Buy();  // 화면 재구성
+                                return;
+                            }
+                            else
+                            {
+                                Console.WriteLine("Gold가 부족합니다.");
+                                Console.ReadLine(); // 확인 대기
+                                Buy();  // 화면 재구성
+                                return;
+                            }
+                               
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("잘못된 입력입니다.");
+                        break;
+                    }
+                }
             }
         }
         class StatusScene
@@ -200,7 +295,7 @@
                     switch (num)
                     {
                         case 1:
-                            RunManageEquipment();
+                            RunEquipmentManage();
                             return;
                         case 0:
                             VillageMenu villageMenu = new VillageMenu();
@@ -222,7 +317,8 @@
                     Console.WriteLine($"- {equipMark}{item.name}\t| {item.stat} +{item.statValue} | {item.description}");
                 }
             }
-            void RunManageEquipment()
+
+            void RunEquipmentManage()
             {
                 Console.Clear();
 
@@ -245,10 +341,10 @@
                 Console.WriteLine("원하시는 행동을 입력해주세요.");
                 Console.Write(">>");
 
-                ManageEquipment();
+                EquipmentManage();
             }
 
-            void ManageEquipment()
+            void EquipmentManage()
             {
                 while (true)
                 {
@@ -263,7 +359,7 @@
                     {
                         Item selectedItem = items[num - 1];
                         selectedItem.isEquipped = !selectedItem.isEquipped;
-                        RunManageEquipment();
+                        RunEquipmentManage();
                         return;
                     }
                     else
