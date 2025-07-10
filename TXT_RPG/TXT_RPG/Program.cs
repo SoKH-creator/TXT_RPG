@@ -80,7 +80,7 @@
             public void Run()
             {
                 Console.Clear();
-                
+
                 Console.WriteLine("상점");
                 Console.WriteLine("필요한 아이템을 얻을 수 있는 상점입니다.");
                 Console.WriteLine();
@@ -321,7 +321,7 @@
 
             void WriteCurrentInventory()
             {
-                
+
                 // 보유 중인 아이템 목록 작성
                 foreach (Item item in items)
                 {
