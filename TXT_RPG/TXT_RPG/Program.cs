@@ -106,6 +106,8 @@
 
             void ShowItemList()
             {
+                shopItems = new List<Item>(); // 상품 목록 초기화
+
                 // 상품 정렬           
                 shopItems.AddRange((from item in ItemDB.items      // 아이템 데이터 배이스에서
                                     where item.stat == "방어력"     // 방어구 상품부터
