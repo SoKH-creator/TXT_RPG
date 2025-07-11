@@ -64,7 +64,7 @@
 
             foreach (Item item in equippeditems)
             {
-                string selectedStat = item.stat;
+                string selectedStat = item.stat ?? "";    // CS8600
                 switch (selectedStat)
                 {
                     case "공격력":

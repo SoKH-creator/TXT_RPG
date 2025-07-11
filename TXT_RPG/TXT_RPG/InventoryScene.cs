@@ -2,7 +2,7 @@
 {
     class InventoryScene
     {
-        List<Item>? items;
+        List<Item> items = new List<Item>();
 
         public void Run()
         {
