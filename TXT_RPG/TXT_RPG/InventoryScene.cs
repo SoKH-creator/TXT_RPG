@@ -56,7 +56,7 @@
         {
 
             // 보유 중인 아이템 목록 작성
-            foreach (Item item in items)
+            foreach (Item item in items)    // CS8602
             {
                 string equipMark = item.isEquipped ? "[E]" : "";
                 Console.WriteLine($"- {equipMark}{item.name}\t| {item.stat} +{item.statValue} | {item.description}");
@@ -103,7 +103,7 @@
                     Run();
                     return;
                 }
-                else if (num >= 1 && num <= items.Count())
+                else if (num >= 1 && num <= items.Count())  // CS8604
                 {
                     Item selectedItem = items[num - 1];
                     selectedItem.isEquipped = !selectedItem.isEquipped;

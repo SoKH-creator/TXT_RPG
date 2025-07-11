@@ -3,11 +3,7 @@
 
     class Player
     {
-        // 싱글톤의 개념과 작성에 아직 익숙하지 않아서 chatGPT의 도움을 받았습니다.
-        // 처음에는 Main에서 처음 실행되는 VillageMenu에서 new Player를 만들어서 유지하는 방식을 사용하려고 했지만,
-        // 오히려 저 방식이 더 구현할 때 구조가 복잡해 질 것 같아,
-        // 이 부분은 chatGPT의 조언을 따라 싱글톤 패턴으로 변경하기로 했습니다.
-        private static Player instance;
+        private static Player? instance = null;     // CS8618
         public static Player Instance
         {
             get
